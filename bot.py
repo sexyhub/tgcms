@@ -32,7 +32,6 @@ def echo(message):
         
         # Schedule the deletion of the replied message after 5 minutes
         time_to_delete = time.time() + 300  # 300 seconds = 5 minutes
-        bot.reply_to(replied_msg, f"This message will be deleted in 5 minutes.")
         schedule_deletion(replied_msg.chat.id, replied_msg.message_id, time_to_delete)
     else:
         bot.send_message(message.chat.id, f"No links found for keyword '{keyword}'")
@@ -73,13 +72,13 @@ def send_links_with_pagination(chat_id, reply_to_message_id, requested_by, query
     
     reply_msg = f"""
     Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {query}
-
+    
     Rᴇǫᴜᴇsᴛᴇᴅ Bʏ ☞ @{requested_by}
-
+    
     ʀᴇsᴜʟᴛ sʜᴏᴡ ɪɴ ☞ {time_taken:.2f} seconds
-
+    
     ᴘᴏᴡᴇʀᴇᴅ ʙʏ ☞ : Okflix
-
+    
     ⚠️ ᴀꜰᴛᴇʀ 5 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ 🗑️
     """
 
