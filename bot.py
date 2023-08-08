@@ -60,12 +60,12 @@ def send_links_with_pagination(chat_id, reply_to_message_id):
 
     markup = generate_keyboard_buttons(links_to_send)
     reply_msg = f"Links (Page {current_page + 1}):"
-    
+
     image_url = "https://images.hdqwalls.com/wallpapers/bthumb/black-panther-wakanda-forever-4k-artwork-zu.jpg"
-    
+
     # Construct the HTML-formatted message
-    formatted_message = f"{reply_msg}\n\n<a href='{image_url}'>&#8205;</a>"
-    
+    formatted_message = f"<a href='{image_url}'>&#8205;</a>\n\n{reply_msg}"
+
     # Send the formatted message with buttons and the image as a reply
     bot.send_message(chat_id, formatted_message, reply_markup=markup, parse_mode='HTML', reply_to_message_id=reply_to_message_id)
 
