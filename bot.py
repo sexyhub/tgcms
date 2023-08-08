@@ -8,7 +8,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # Your Telegram Bot token
-BOT_TOKEN = 'YOUR_BOT_TOKEN'
+BOT_TOKEN = '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc'
 
 # Your CMS API endpoint for fetching post links based on title
 CMS_API_URL = 'https://nxshare.top/m/api.php'
@@ -60,7 +60,7 @@ def inline_query(update: Update, context: CallbackContext) -> None:
         update.inline_query.answer([])  # No results
 
 def main() -> None:
-    updater = Updater(BOT_TOKEN, use_context=True)
+    updater = Updater(token=BOT_TOKEN, use_context=True)
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("start", start))
