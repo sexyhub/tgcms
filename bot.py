@@ -12,24 +12,27 @@ def start(message):
 
 @bot.message_handler(func=lambda message: True)
 def echo(message):
-    keyword = message.text
+    keyword = message.text.lower()  # Convert the message text to lowercase for case-insensitive matching
 
-    cms_link = fetch_cms_link(keyword)
+    cms_links = fetch_cms_links(keyword)
 
-    if cms_link:
-        bot.send_message(message.chat.id, cms_link)
+    if cms_links:
+        links_message = "\n".join(cms_links)
+        bot.send_message(message.chat.id, f"Links for keyword '{keyword}':\n{links_message}")
     else:
-        bot.send_message(message.chat.id, f"No link found for keyword: {keyword}")
+        bot.send_message(message.chat.id, f"No links found for keyword '{keyword}'")
 
-def fetch_cms_link(keyword):
+def fetch_cms_links(keyword):
     api_url = "https://nxshare.top/m/api.php"
     response = requests.get(api_url)
     data = response.json()
 
-    for item in data:
-        if keyword in item['title']:
-            return item['url']
+    matching_links = []
 
-    return None
+    for item in data:
+        if keyword in item['title'].lower():  # Convert title to lowercase for case-insensitive matching
+            matching_links.append(item['url'])
+
+    return matching_links
 
 bot.polling()
