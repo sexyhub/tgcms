@@ -1,8 +1,9 @@
 import telebot
 import requests
+from telebot import types
 
 # Replace 'YOUR_BOT_TOKEN' with your actual bot token
-BOT_TOKEN = '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc'
+BOT_TOKEN = 'YOUR_BOT_TOKEN'
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
@@ -17,10 +18,10 @@ def echo(message):
     cms_links = fetch_cms_links(keyword)
 
     if cms_links:
-        links_message = "\n".join(cms_links)
-        bot.reply_to(message, f"Links for keyword '{keyword}':\n{links_message}")
+        markup = generate_keyboard_buttons(cms_links)
+        bot.send_message(message.chat.id, f"Links for keyword '{keyword}':", reply_markup=markup)
     else:
-        bot.reply_to(message, f"No links found for keyword '{keyword}'")
+        bot.send_message(message.chat.id, f"No links found for keyword '{keyword}'")
 
 def fetch_cms_links(keyword):
     api_url = "https://nxshare.top/m/api.php"
@@ -31,8 +32,17 @@ def fetch_cms_links(keyword):
 
     for item in data:
         if keyword in item['title'].lower():  # Convert title to lowercase for case-insensitive matching
-            matching_links.append(item['url'])
+            matching_links.append({'title': item['title'], 'url': item['url']})
 
     return matching_links
+
+def generate_keyboard_buttons(links):
+    markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+
+    for link in links:
+        button = types.KeyboardButton(f"🔗 {link['title']}")
+        markup.add(button)
+
+    return markup
 
 bot.polling()
