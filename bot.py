@@ -19,7 +19,9 @@ def echo(message):
 
     if cms_links:
         markup = generate_keyboard_buttons(cms_links)
-        bot.send_message(message.chat.id, f"Links for keyword '{keyword}':", reply_markup=markup)
+        reply_msg = f"Links for keyword '{keyword}':"
+        bot.send_message(message.chat.id, reply_msg, reply_markup=markup)
+        send_image(message.chat.id)
     else:
         bot.send_message(message.chat.id, f"No links found for keyword '{keyword}'")
 
@@ -44,5 +46,9 @@ def generate_keyboard_buttons(links):
         markup.add(button)
 
     return markup
+
+def send_image(chat_id):
+    # Send the image as a reply
+    bot.send_photo(chat_id, "https://images.hdqwalls.com/wallpapers/bthumb/black-panther-wakanda-forever-4k-artwork-zu.jpg")
 
 bot.polling()
