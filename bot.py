@@ -1,7 +1,7 @@
 import logging
 import requests
 from telegram import Update, InlineQueryResultArticle, InputTextMessageContent
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, InlineQueryHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext, InlineQueryHandler
 
 # Set up logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
