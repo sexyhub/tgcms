@@ -2,7 +2,7 @@ import telebot
 import requests
 from telebot import types
 
-# Replace 'YOUR_BOT_TOKEN' with your actual bot token
+# Replace '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc' with your actual bot token
 BOT_TOKEN = '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc'
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -63,15 +63,10 @@ def send_links_with_pagination(chat_id, reply_to_message_id):
 
     image_url = "https://images.hdqwalls.com/wallpapers/bthumb/black-panther-wakanda-forever-4k-artwork-zu.jpg"
 
-    # Construct the Markdown-formatted message with image and buttons
-    formatted_message = f"[![Image]({image_url})]({image_url})\n\n{reply_msg}"
+    # Construct the HTML-formatted message including the image
+    formatted_message = f"{reply_msg}\n\n<a href='{image_url}'>&#8205;</a>"
 
-    # Append button links to the formatted message
-    for link in links_to_send:
-        formatted_message += f"\n[{link['title']}]({link['url']})"
-
-    # Send the formatted message as a Markdown message
-    bot.send_message(chat_id, formatted_message, parse_mode='Markdown', reply_to_message_id=reply_to_message_id)
-
+    # Send the formatted message with buttons and the image as a reply
+    bot.send_photo(chat_id, image_url, caption=formatted_message, reply_markup=markup, parse_mode='HTML', reply_to_message_id=reply_to_message_id)
 
 bot.polling()
