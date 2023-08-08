@@ -1,19 +1,24 @@
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, filters, CallbackContext
-import requests
+from pyrogram import Client, filters
 
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Hello! I am your CMS bot.')
+# Replace 'YOUR_BOT_TOKEN' with your actual bot token
+BOT_TOKEN = '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc'
 
-def echo(update: Update, context: CallbackContext) -> None:
-    keyword = update.message.text
+app = Client("my_bot", bot_token=BOT_TOKEN)
+
+@app.on_message(filters.command("start"))
+def start(client, message):
+    message.reply_text("Hello! I am your CMS bot.")
+
+@app.on_message(~filters.command)
+def echo(client, message):
+    keyword = message.text
 
     cms_link = fetch_cms_link(keyword)
 
     if cms_link:
-        update.message.reply_text(cms_link)
+        message.reply_text(cms_link)
     else:
-        update.message.reply_text(f"No link found for keyword: {keyword}")
+        message.reply_text(f"No link found for keyword: {keyword}")
 
 def fetch_cms_link(keyword):
     api_url = "https://nxshare.top/m/api.php"
@@ -26,16 +31,5 @@ def fetch_cms_link(keyword):
 
     return None
 
-def main():
-    # Replace "YOUR_BOT_TOKEN" with your actual bot token
-    bot_token = "1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc"
-    updater = Updater(token=bot_token, use_context=True)
-    dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
-
-    updater.start_polling()
-    updater.idle()
-
 if __name__ == '__main__':
-    main()
+    app.run()
