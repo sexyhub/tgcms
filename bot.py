@@ -7,21 +7,25 @@ BOT_TOKEN = '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc'
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
+RESULTS_PER_PAGE = 5
+current_page = 0
+cms_links = []
+
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, "Hello! I am your CMS bot.")
 
 @bot.message_handler(func=lambda message: True)
 def echo(message):
+    global cms_links, current_page
+    
     keyword = message.text.lower()  # Convert the message text to lowercase for case-insensitive matching
 
     cms_links = fetch_cms_links(keyword)
+    current_page = 0
 
     if cms_links:
-        markup = generate_keyboard_buttons(cms_links)
-        reply_msg = f"Links for keyword '{keyword}':"
-        bot.send_message(message.chat.id, reply_msg, reply_markup=markup)
-        send_image(message.chat.id)
+        send_links_with_pagination(message.chat.id, message.message_id)
     else:
         bot.send_message(message.chat.id, f"No links found for keyword '{keyword}'")
 
@@ -47,8 +51,18 @@ def generate_keyboard_buttons(links):
 
     return markup
 
-def send_image(chat_id):
-    # Send the image as a reply
+def send_links_with_pagination(chat_id, reply_to_message_id):
+    global cms_links, current_page
+
+    start_idx = current_page * RESULTS_PER_PAGE
+    end_idx = start_idx + RESULTS_PER_PAGE
+    links_to_send = cms_links[start_idx:end_idx]
+
+    markup = generate_keyboard_buttons(links_to_send)
+    reply_msg = f"Links (Page {current_page + 1}):"
+    
+    # Send the message with buttons and the image as a reply
+    bot.send_message(chat_id, reply_msg, reply_markup=markup, reply_to_message_id=reply_to_message_id)
     bot.send_photo(chat_id, "https://images.hdqwalls.com/wallpapers/bthumb/black-panther-wakanda-forever-4k-artwork-zu.jpg")
 
 bot.polling()
