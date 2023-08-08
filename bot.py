@@ -29,7 +29,7 @@ def fetch_cms_link(keyword):
 def main():
     # Replace "YOUR_BOT_TOKEN" with your actual bot token
     bot_token = "1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc"
-    updater = Updater(bot_token)
+    updater = Updater(token=bot_token, use_context=True)
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
