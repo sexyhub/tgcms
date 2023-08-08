@@ -1,6 +1,7 @@
 import telebot
 import requests
 import time
+import schedule
 from telebot import types
 
 # Replace 'YOUR_BOT_TOKEN' with your actual bot token
@@ -82,17 +83,18 @@ Rᴇǫᴜᴇsᴛᴇᴅ Bʏ ☞ @{requested_by}
 ⚠️ ᴀꜰᴛᴇʀ 5 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ 🗑️
 """
 
-
     image_url = "https://images.hdqwalls.com/wallpapers/bthumb/black-panther-wakanda-forever-4k-artwork-zu.jpg"
 
     # Send the formatted message with buttons and the image as a reply
     return bot.send_photo(chat_id, image_url, caption=reply_msg, reply_markup=markup, parse_mode='HTML', reply_to_message_id=reply_to_message_id), time_taken
 
 def schedule_deletion(chat_id, message_id, delete_at):
-    while time.time() < delete_at:
-        pass  # Wait until the deletion time is reached
+    def delete_message():
+        bot.delete_message(chat_id, message_id)
     
-    # Delete the message
-    bot.delete_message(chat_id, message_id)
+    schedule.every().second.do(delete_message).tag(message_id).at(delete_at)
+
+    while not schedule.get_job(message_id).next_run:
+        pass
 
 bot.polling()
