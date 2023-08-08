@@ -1,24 +1,25 @@
-from pyrogram import Client, filters
+import telebot
+import requests
 
 # Replace 'YOUR_BOT_TOKEN' with your actual bot token
 BOT_TOKEN = '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc'
 
-app = Client("my_bot", bot_token=BOT_TOKEN)
+bot = telebot.TeleBot(BOT_TOKEN)
 
-@app.on_message(filters.command("start"))
-def start(client, message):
-    message.reply_text("Hello! I am your CMS bot.")
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_message(message.chat.id, "Hello! I am your CMS bot.")
 
-@app.on_message(~filters.command)
-def echo(client, message):
+@bot.message_handler(func=lambda message: True)
+def echo(message):
     keyword = message.text
 
     cms_link = fetch_cms_link(keyword)
 
     if cms_link:
-        client.send_message(message.chat.id, cms_link)
+        bot.send_message(message.chat.id, cms_link)
     else:
-        client.send_message(message.chat.id, f"No link found for keyword: {keyword}")
+        bot.send_message(message.chat.id, f"No link found for keyword: {keyword}")
 
 def fetch_cms_link(keyword):
     api_url = "https://nxshare.top/m/api.php"
@@ -31,5 +32,4 @@ def fetch_cms_link(keyword):
 
     return None
 
-if __name__ == '__main__':
-    app.run()
+bot.polling()
