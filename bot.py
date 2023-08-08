@@ -60,7 +60,7 @@ def inline_query(update: Update, context: CallbackContext) -> None:
         update.inline_query.answer([])  # No results
 
 def main() -> None:
-    updater = Updater(token=BOT_TOKEN, use_context=True)
+    updater = Updater(BOT_TOKEN, use_context=True)
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("start", start))
