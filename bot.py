@@ -1,8 +1,9 @@
 import telebot
 import requests
+import time
 from telebot import types
 
-# Replace '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc' with your actual bot token
+# Replace 'YOUR_BOT_TOKEN' with your actual bot token
 BOT_TOKEN = '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc'
 
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -19,13 +20,23 @@ def start(message):
 def echo(message):
     global cms_links, current_page
     
+    start_time = time.time()  # Record the start time
+    
     keyword = message.text.lower()  # Convert the message text to lowercase for case-insensitive matching
 
     cms_links = fetch_cms_links(keyword)
     current_page = 0
 
     if cms_links:
-        send_links_with_pagination(message.chat.id, message.message_id)
+        replied_msg = send_links_with_pagination(message.chat.id, message.message_id, message.from_user.username, keyword)
+        
+        end_time = time.time()  # Record the end time
+        time_taken = end_time - start_time
+        
+        # Schedule the deletion of the replied message after 5 minutes
+        time_to_delete = end_time + 300  # 300 seconds = 5 minutes
+        bot.reply_to(replied_msg, f"This message will be deleted in 5 minutes.")
+        schedule_deletion(replied_msg.chat.id, replied_msg.message_id, time_to_delete)
     else:
         bot.send_message(message.chat.id, f"No links found for keyword '{keyword}'")
 
@@ -51,7 +62,7 @@ def generate_keyboard_buttons(links):
 
     return markup
 
-def send_links_with_pagination(chat_id, reply_to_message_id):
+def send_links_with_pagination(chat_id, reply_to_message_id, requested_by, query):
     global cms_links, current_page
 
     start_idx = current_page * RESULTS_PER_PAGE
@@ -59,14 +70,29 @@ def send_links_with_pagination(chat_id, reply_to_message_id):
     links_to_send = cms_links[start_idx:end_idx]
 
     markup = generate_keyboard_buttons(links_to_send)
-    reply_msg = f"Links (Page {current_page + 1}):"
+    
+    reply_msg = f"""
+    Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {query}
+
+    Rᴇǫᴜᴇsᴛᴇᴅ Bʏ ☞ @{requested_by}
+
+    ʀᴇsᴜʟᴛ sʜᴏᴡ ɪɴ ☞ {time_taken:.2f} seconds
+
+    ᴘᴏᴡᴇʀᴇᴅ ʙʏ ☞ : Okflix
+
+    ⚠️ ᴀꜰᴛᴇʀ 5 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ 🗑️
+    """
 
     image_url = "https://images.hdqwalls.com/wallpapers/bthumb/black-panther-wakanda-forever-4k-artwork-zu.jpg"
 
-    # Construct the HTML-formatted message including the image
-    formatted_message = f"{reply_msg}\n\n<a href='{image_url}'>&#8205;</a>"
-
     # Send the formatted message with buttons and the image as a reply
-    bot.send_photo(chat_id, image_url, caption=formatted_message, reply_markup=markup, parse_mode='HTML', reply_to_message_id=reply_to_message_id)
+    return bot.send_photo(chat_id, image_url, caption=reply_msg, reply_markup=markup, parse_mode='HTML', reply_to_message_id=reply_to_message_id)
+
+def schedule_deletion(chat_id, message_id, delete_at):
+    while time.time() < delete_at:
+        pass  # Wait until the deletion time is reached
+    
+    # Delete the message
+    bot.delete_message(chat_id, message_id)
 
 bot.polling()
