@@ -18,8 +18,8 @@ def echo(message):
     cms_links = fetch_cms_links(keyword)
 
     if cms_links:
-        markup = generate_keyboard_buttons(cms_links)
-        bot.send_message(message.chat.id, f"Links for keyword '{keyword}':", reply_markup=markup)
+        for link in cms_links:
+            bot.send_message(message.chat.id, f"🔗 {link['title']}\n{link['url']}")
     else:
         bot.send_message(message.chat.id, f"No links found for keyword '{keyword}'")
 
@@ -35,14 +35,5 @@ def fetch_cms_links(keyword):
             matching_links.append({'title': item['title'], 'url': item['url']})
 
     return matching_links
-
-def generate_keyboard_buttons(links):
-    markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
-
-    for link in links:
-        button = types.KeyboardButton(f"🔗 {link['title']}")
-        markup.add(button)
-
-    return markup
 
 bot.polling()
