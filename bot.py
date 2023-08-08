@@ -1,7 +1,7 @@
 import logging
 import requests
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram import Update, InlineQueryResultArticle, InputTextMessageContent
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, InlineQueryHandler
 
 # Set up logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -32,12 +32,41 @@ def handle_message(update: Update, context: CallbackContext) -> None:
     else:
         update.message.reply_text("Error fetching data from CMS.")
 
+def list_all_posts(update: Update, context: CallbackContext) -> None:
+    response = requests.get(CMS_API_URL)
+    if response.status_code == 200:
+        posts = response.json()
+        post_titles = [post['title'] for post in posts]
+        update.message.reply_text("Available posts:\n" + "\n".join(post_titles))
+    else:
+        update.message.reply_text("Error fetching data from CMS.")
+
+def inline_query(update: Update, context: CallbackContext) -> None:
+    query = update.inline_query.query
+    response = requests.get(CMS_API_URL)
+    if response.status_code == 200:
+        posts = response.json()
+        matching_posts = [post for post in posts if query.lower() in post['title'].lower()]
+        results = [
+            InlineQueryResultArticle(
+                id=str(idx),
+                title=post['title'],
+                input_message_content=InputTextMessageContent(post['url'])
+            )
+            for idx, post in enumerate(matching_posts)
+        ]
+        update.inline_query.answer(results)
+    else:
+        update.inline_query.answer([])  # No results
+
 def main() -> None:
     updater = Updater(token=BOT_TOKEN, use_context=True)
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("list", list_all_posts))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
+    dispatcher.add_handler(InlineQueryHandler(inline_query))
 
     updater.start_polling()
     updater.idle()
