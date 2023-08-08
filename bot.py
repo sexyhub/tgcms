@@ -63,10 +63,15 @@ def send_links_with_pagination(chat_id, reply_to_message_id):
 
     image_url = "https://images.hdqwalls.com/wallpapers/bthumb/black-panther-wakanda-forever-4k-artwork-zu.jpg"
 
-    # Send the image as a separate photo message
-    bot.send_photo(chat_id, photo=image_url, reply_to_message_id=reply_to_message_id)
+    # Construct the Markdown-formatted message with image and buttons
+    formatted_message = f"[![Image]({image_url})]({image_url})\n\n{reply_msg}"
 
-    # Send the reply message with buttons
-    bot.send_message(chat_id, reply_msg, reply_markup=markup, parse_mode='HTML')
+    # Append button links to the formatted message
+    for link in links_to_send:
+        formatted_message += f"\n[{link['title']}]({link['url']})"
+
+    # Send the formatted message as a Markdown message
+    bot.send_message(chat_id, formatted_message, parse_mode='Markdown', reply_to_message_id=reply_to_message_id)
+
 
 bot.polling()
