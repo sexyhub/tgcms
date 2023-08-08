@@ -1,7 +1,7 @@
 import telebot
 import requests
 import time
-import schedule
+import threading
 from telebot import types
 
 # Replace 'YOUR_BOT_TOKEN' with your actual bot token
@@ -92,9 +92,9 @@ def schedule_deletion(chat_id, message_id, delete_at):
     def delete_message():
         bot.delete_message(chat_id, message_id)
     
-    schedule.every().second.do(delete_message).tag(message_id).at(delete_at)
-
-    while not schedule.get_job(message_id).next_run:
-        pass
+    time_to_wait = delete_at - time.time()
+    if time_to_wait > 0:
+        deletion_timer = threading.Timer(time_to_wait, delete_message)
+        deletion_timer.start()
 
 bot.polling()
