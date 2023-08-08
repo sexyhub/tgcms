@@ -28,13 +28,10 @@ def echo(message):
     current_page = 0
 
     if cms_links:
-        replied_msg = send_links_with_pagination(message.chat.id, message.message_id, message.from_user.username, keyword)
-        
-        end_time = time.time()  # Record the end time
-        time_taken = end_time - start_time
+        replied_msg, time_taken = send_links_with_pagination(message.chat.id, message.message_id, message.from_user.username, keyword, start_time)
         
         # Schedule the deletion of the replied message after 5 minutes
-        time_to_delete = end_time + 300  # 300 seconds = 5 minutes
+        time_to_delete = time.time() + 300  # 300 seconds = 5 minutes
         bot.reply_to(replied_msg, f"This message will be deleted in 5 minutes.")
         schedule_deletion(replied_msg.chat.id, replied_msg.message_id, time_to_delete)
     else:
@@ -62,14 +59,17 @@ def generate_keyboard_buttons(links):
 
     return markup
 
-def send_links_with_pagination(chat_id, reply_to_message_id, requested_by, query):
+def send_links_with_pagination(chat_id, reply_to_message_id, requested_by, query, start_time):
     global cms_links, current_page
-
+    
     start_idx = current_page * RESULTS_PER_PAGE
     end_idx = start_idx + RESULTS_PER_PAGE
     links_to_send = cms_links[start_idx:end_idx]
 
     markup = generate_keyboard_buttons(links_to_send)
+    
+    end_time = time.time()  # Record the end time
+    time_taken = end_time - start_time
     
     reply_msg = f"""
     Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {query}
@@ -86,7 +86,7 @@ def send_links_with_pagination(chat_id, reply_to_message_id, requested_by, query
     image_url = "https://images.hdqwalls.com/wallpapers/bthumb/black-panther-wakanda-forever-4k-artwork-zu.jpg"
 
     # Send the formatted message with buttons and the image as a reply
-    return bot.send_photo(chat_id, image_url, caption=reply_msg, reply_markup=markup, parse_mode='HTML', reply_to_message_id=reply_to_message_id)
+    return bot.send_photo(chat_id, image_url, caption=reply_msg, reply_markup=markup, parse_mode='HTML', reply_to_message_id=reply_to_message_id), time_taken
 
 def schedule_deletion(chat_id, message_id, delete_at):
     while time.time() < delete_at:
