@@ -70,17 +70,18 @@ def send_links_with_pagination(chat_id, reply_to_message_id, requested_by, query
     end_time = time.time()  # Record the end time
     time_taken = end_time - start_time
     
-    reply_msg = r"""
-    Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {query}
+    reply_msg = f"""
+Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {query}
     
-    Rᴇǫᴜᴇsᴛᴇᴅ Bʏ ☞ @{requested_by}
+Rᴇǫᴜᴇsᴛᴇᴅ Bʏ ☞ @{requested_by}
     
-    ʀᴇsᴜʟᴛ sʜᴏᴡ ɪɴ ☞ {time_taken:.2f} seconds
+ʀᴇsᴜʟᴛ sʜᴏᴡ ɪɴ ☞ {time_taken:.2f} seconds
     
-    ᴘᴏᴡᴇʀᴇᴅ ʙʏ ☞ : Okflix
+ᴘᴏᴡᴇʀᴇᴅ ʙʏ ☞ : Okflix
     
-    ⚠️ ᴀꜰᴛᴇʀ 5 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ 🗑️
-    """
+⚠️ ᴀꜰᴛᴇʀ 5 ᴍɪɴᴜᴛᴇꜱ ᴛʜɪꜱ ᴍᴇꜱꜱᴀɢᴇ ᴡɪʟʟ ʙᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴅᴇʟᴇᴛᴇᴅ 🗑️
+"""
+
 
     image_url = "https://images.hdqwalls.com/wallpapers/bthumb/black-panther-wakanda-forever-4k-artwork-zu.jpg"
 
