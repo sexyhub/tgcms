@@ -8,7 +8,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # Your Telegram Bot token
-BOT_TOKEN = '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc'
+BOT_TOKEN = 'YOUR_BOT_TOKEN'
 
 # Your CMS API endpoint for fetching post links based on title
 CMS_API_URL = 'https://nxshare.top/m/api.php'
