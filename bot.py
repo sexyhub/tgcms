@@ -16,9 +16,9 @@ def echo(client, message):
     cms_link = fetch_cms_link(keyword)
 
     if cms_link:
-        message.reply_text(cms_link)
+        client.send_message(message.chat.id, cms_link)
     else:
-        message.reply_text(f"No link found for keyword: {keyword}")
+        client.send_message(message.chat.id, f"No link found for keyword: {keyword}")
 
 def fetch_cms_link(keyword):
     api_url = "https://nxshare.top/m/api.php"
