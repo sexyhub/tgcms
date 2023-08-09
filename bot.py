@@ -8,7 +8,7 @@ from aiogram.types import ParseMode
 from aiogram.utils import executor
 
 # Replace 'YOUR_BOT_TOKEN' with your actual bot token
-BOT_TOKEN = '1633187381:AAEx4Ap-RV7RfFzSfqhY1JePEEIJ9v9IRYc'
+BOT_TOKEN = '6220396148:AAGAPu-M2S-PQP5XjypJM9gvz5E3dLQsQvc'
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
